@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Simulador interativo de algoritmos de escalonamento de CPU: FCFS, SJF e SRTF. Visualize diagramas de Gantt e métricas de desempenho.">
+    <title>Simulador de Escalonamento de CPU</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-area">
+                    <div class="logo-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="4" width="16" height="16" rx="2"/>
+                            <rect x="9" y="9" width="6" height="6"/>
+                            <path d="M15 2v2"/><path d="M15 20v2"/>
+                            <path d="M2 15h2"/><path d="M20 15h2"/>
+                            <path d="M9 2v2"/><path d="M9 20v2"/>
+                            <path d="M2 9h2"/><path d="M20 9h2"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1>CPU Scheduler</h1>
+                        <p class="header-subtitle">Simulador de Escalonamento de Processos</p>
+                    </div>
+                </div>
+                <div class="header-badge">Sistemas Operacionais</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Config Panel -->
+            <section class="panel config-panel" id="config-panel">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        <span>Configuração</span>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <!-- Algorithm Selector -->
+                    <div class="form-group">
+                        <label class="form-label">Algoritmo de Escalonamento</label>
+                        <div class="algorithm-selector" id="algorithm-selector">
+                            <button class="algo-btn active" data-algo="fcfs" id="btn-fcfs">
+                                <span class="algo-tag">FIFO</span>
+                                <span class="algo-name">FCFS</span>
+                                <span class="algo-desc">First Come, First Served</span>
+                            </button>
+                            <button class="algo-btn" data-algo="sjf" id="btn-sjf">
+                                <span class="algo-tag">NÃO PREEMPTIVO</span>
+                                <span class="algo-name">SJF</span>
+                                <span class="algo-desc">Shortest Job First</span>
+                            </button>
+                            <button class="algo-btn" data-algo="srtf" id="btn-srtf">
+                                <span class="algo-tag">PREEMPTIVO</span>
+                                <span class="algo-name">SRTF</span>
+                                <span class="algo-desc">Shortest Remaining Time</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Process Table -->
+                    <div class="form-group">
+                        <div class="table-header-row">
+                            <label class="form-label">Tabela de Processos</label>
+                            <button class="btn btn-add" id="btn-add-process">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                                </svg>
+                                Adicionar Processo
+                            </button>
+                        </div>
+
+                        <div class="process-table-wrapper">
+                            <table class="process-table" id="process-table">
+                                <thead>
+                                    <tr>
+                                        <th class="th-name">Processo</th>
+                                        <th class="th-arrival">Chegada</th>
+                                        <th class="th-burst">Duração</th>
+                                        <th class="th-action"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="process-tbody">
+                                    <!-- Rows injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Simulate Button -->
+                    <button class="btn btn-simulate" id="btn-simulate">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        Simular Escalonamento
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="results-section">
+                <!-- Gantt Chart -->
+                <div class="panel results-panel" id="gantt-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 3v18h18"/><rect x="7" y="13" width="9" height="4" rx="1"/>
+                                <rect x="7" y="5" width="12" height="4" rx="1"/>
+                            </svg>
+                            <span>Diagrama de Gantt</span>
+                        </div>
+                        <span class="panel-badge" id="algo-badge">FCFS</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="gantt-container" id="gantt-container">
+                            <div class="empty-state">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.3">
+                                    <path d="M3 3v18h18"/><rect x="7" y="13" width="9" height="4" rx="1"/>
+                                    <rect x="7" y="5" width="12" height="4" rx="1"/>
+                                </svg>
+                                <p>Configure os processos e clique em "Simular" para visualizar o diagrama.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Row -->
+                <div class="metrics-row">
+                    <!-- Average Wait Time -->
+                    <div class="panel metric-highlight-panel" id="avg-panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                <span>Tempo Médio de Espera</span>
+                            </div>
+                        </div>
+                        <div class="panel-body avg-body">
+                            <div class="avg-value" id="avg-wait-value">—</div>
+                            <div class="avg-unit">unidades de tempo</div>
+                        </div>
+                    </div>
+
+                    <!-- Individual Metrics Table -->
+                    <div class="panel metrics-table-panel" id="metrics-panel">
+                        <div class="panel-header">
+                            <div class="panel-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                    <line x1="10" y1="9" x2="8" y2="9"/>
+                                </svg>
+                                <span>Métricas Individuais</span>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <table class="metrics-table" id="metrics-table">
+                                <thead>
+                                    <tr>
+                                        <th>Processo</th>
+                                        <th>Chegada</th>
+                                        <th>Duração</th>
+                                        <th>Conclusão</th>
+                                        <th>T. Espera</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="metrics-tbody">
+                                    <tr><td colspan="5" class="empty-cell">Nenhuma simulação executada.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preemption Log (SRTF only) -->
+                <div class="panel log-panel hidden" id="log-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                            <span>Log de Preempções</span>
+                        </div>
+                        <span class="panel-badge badge-warning">SRTF</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="log-entries" id="log-entries">
+                            <!-- Log entries injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Simulador de Escalonamento de CPU &bull; Sistemas Operacionais</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

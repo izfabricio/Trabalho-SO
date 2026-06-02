@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Escalonamento de CPU</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Simulador de Escalonamento de CPU</h1>
+
+  <div id="painel">
+    <h2>Escolha o Algoritmo:</h2>
+    <select id="algoritmo">
+      <option value="fcfs">FCFS (First Come, First Served)</option>
+      <option value="sjf">SJF Não Preemptivo (Shortest Job First)</option>
+      <option value="srtf">SRTF (Shortest Remaining Time First)</option>
+    </select>
+
+    <h2>Processos:</h2>
+    <table id="tabela-processos">
+      <thead>
+        <tr>
+          <th>Processo</th>
+          <th>Chegada</th>
+          <th>Burst</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody id="corpo-tabela">
+      </tbody>
+    </table>
+
+    <button id="btn-adicionar" onclick="adicionarProcesso()">+ Adicionar Processo</button>
+    <br><br>
+    <button id="btn-simular" onclick="simular()">Simular Escalonamento</button>
+
+    <p id="erro" style="color: red; display: none;"></p>
+  </div>
+
+  <div id="resultados" style="display: none;">
+    <h2>Resultados</h2>
+
+    <h3>Tempo Médio de Espera</h3>
+    <p id="media-espera" style="font-size: 24px; font-weight: bold;"></p>
+
+    <h3>Diagrama de Gantt</h3>
+    <div id="gantt"></div>
+    <div id="gantt-tempos"></div>
+
+    <h3>Tabela de Métricas</h3>
+    <table id="tabela-metricas">
+      <thead>
+        <tr>
+          <th>Processo</th>
+          <th>Chegada</th>
+          <th>Burst</th>
+          <th>Início</th>
+          <th>Conclusão</th>
+          <th>Espera</th>
+        </tr>
+      </thead>
+      <tbody id="corpo-metricas"></tbody>
+    </table>
+
+    <div id="div-log" style="display: none;">
+      <h3>Log de Preempções (SRTF)</h3>
+      <div id="log-preempcoes"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
